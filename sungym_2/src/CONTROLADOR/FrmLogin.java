@@ -4,6 +4,10 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import RECURSOS.TextPrompt;
+import VISTA.FrmPersonal;
+import VISTA.FrmSign;
+import VISTA.FrmUser;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -12,12 +16,21 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.ArrayList;
+
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
+import DATOS.SQLUsers;
+import MODELO.Usuario;
+
 import javax.swing.JPasswordField;
 import java.awt.ComponentOrientation;
 public class FrmLogin {
 
-	private JFrame frame;
+	private JFrame frameLogin;
 	private JTextField JTFUser;
 	private JPasswordField passwordField;
 
@@ -29,7 +42,7 @@ public class FrmLogin {
 			public void run() {
 				try {
 					FrmLogin window = new FrmLogin();
-					window.frame.setVisible(true);
+					window.frameLogin.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -49,19 +62,14 @@ public class FrmLogin {
 	 */
 	private void initialize() {
 		//Ventana
-		
-		frame = new JFrame();
-		frame.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		frame.getContentPane().setBackground(SystemColor.text);
-		frame.setBounds(0, 0, 450, 300);
-		frame.setLocationRelativeTo(null);
-		frame.getContentPane().setLayout(null);
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//Imagen fondo login
-		//ImageIcon iFLogin = new ImageIcon("src/RECURSOS/login.png");
-        //ImageIcon iEFLogin = new ImageIcon(iFLogin.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_DEFAULT));
+		frameLogin = new JFrame();
+		frameLogin.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		frameLogin.getContentPane().setBackground(SystemColor.text);
+		frameLogin.setBounds(0, 0, 450, 300);
+		frameLogin.setLocationRelativeTo(null);
+		frameLogin.getContentPane().setLayout(null);
+		frameLogin.setResizable(false);
+		frameLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//Label informativo
 		JLabel JLlogin = new JLabel(" LOGIN				       		            Sungym");
@@ -70,7 +78,7 @@ public class FrmLogin {
 		JLlogin.setFont(new Font("Courier New", Font.CENTER_BASELINE, 23));
 		JLlogin.setForeground(Color.WHITE);
 		JLlogin.setBounds(0, 0, 450, 40);
-		frame.getContentPane().add(JLlogin, BorderLayout.NORTH);
+		frameLogin.getContentPane().add(JLlogin, BorderLayout.NORTH);
 		
 		//TextField usuario
 		JTFUser = new JTextField();
@@ -78,14 +86,14 @@ public class FrmLogin {
 		TextPrompt placeholder = new TextPrompt("User", JTFUser);
 	    placeholder.changeAlpha(0.75f);
 	    placeholder.changeStyle(Font.ITALIC);
-		frame.getContentPane().add(JTFUser);
+		frameLogin.getContentPane().add(JTFUser);
 		JTFUser.setHorizontalAlignment(JTextField.LEFT); 
 		JTFUser.setColumns(10);
 		
-		//ContraseÃ±a
+		//Contraseña
 		passwordField = new JPasswordField("Password");
 		passwordField.setBounds(144, 110, 150, 24);
-		frame.getContentPane().add(passwordField);
+		frameLogin.getContentPane().add(passwordField);
 		
 		//Icono de boton fichar
 		ImageIcon iconBSign = new ImageIcon("src/RECURSOS/sign.png");
@@ -94,7 +102,7 @@ public class FrmLogin {
         //Boton para fichar
 		JButton bSign = new JButton();
 		bSign.setBounds(390, 207, 34, 40);
-		frame.getContentPane().add(bSign);
+		frameLogin.getContentPane().add(bSign);
 		bSign.setMnemonic(KeyEvent.VK_ENTER);
 		bSign.setIgnoreRepaint(true);
 		bSign.setBorderPainted(false);
@@ -102,8 +110,11 @@ public class FrmLogin {
 		bSign.setIcon(iconEBSign);
 		bSign.setFocusable(false);
 		
+		//Evento: abrir ventana sign
 		bSign.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				FrmSign frmSign = new FrmSign();
+				frmSign.frameSign.setVisible(true);
 		
 			}
 		});
@@ -115,7 +126,7 @@ public class FrmLogin {
 		//Boton para entrar 
 		JButton bSingin = new JButton();
 		bSingin.setBounds(165, 164, 117, 25);
-		frame.getContentPane().add(bSingin);
+		frameLogin.getContentPane().add(bSingin);
 		bSingin.setMnemonic(KeyEvent.VK_ENTER);
 		bSingin.setIgnoreRepaint(true);
 		bSingin.setBorderPainted(false);
@@ -123,6 +134,22 @@ public class FrmLogin {
 		bSingin.setIcon(iconEBSignin);
 		bSingin.setFocusable(false);
 		
+		//Evento: abrir ventana de usuario o admin
+		bSingin.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						try {
+							comprobarUsuario();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
+				
+		//Imagen fondo
 		JLabel JLImagen = new JLabel();
 		JLImagen.setBackground(new Color(255, 255, 255));
 		JLImagen.setOpaque(true);
@@ -130,13 +157,52 @@ public class FrmLogin {
 		JLImagen.setIcon(new ImageIcon(FrmLogin.class.getResource("/RECURSOS/gym.jpg")));
 		JLImagen.setFocusable(false);
 		
-		frame.getContentPane().add(JLImagen);
+		frameLogin.getContentPane().add(JLImagen);
+	}
+	
+	/**
+	 * Función que comprueba si existe el usuario. En caso afirmativo, se mira si la contraseña es correcta y 
+	 * que tipo de usuario es para abrirle la ventana correspondiente a su tipo de usuario.
+	 * @throws ParseException 
+	 * @throws SQLException 
+	 * 
+	 */
+	public void comprobarUsuario() throws SQLException, ParseException {
+		SQLUsers sqlUsers = new SQLUsers();
+		ArrayList<Usuario> usu = null;
+		try {
+			 usu = sqlUsers.consultar(JTFUser.getText());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		
-		
-		
-				
+		if(usu.isEmpty()) {
+			System.out.println("El usuario no existe");
+		}else {
+			if(usu.get(0).getcontrasena().contentEquals(String.valueOf(passwordField.getPassword()))) {
+				//abrir ventana segun tipo de usuario
+				if (isPersonal(usu.get(0))){
+					FrmPersonal frmPersonal = new FrmPersonal(usu.get(0));
+					frmPersonal.framePersonal.setVisible(true);
+				}else {
+					FrmUser frmUser = new FrmUser(usu.get(0));
+					frmUser.frameUser.setVisible(true);
+				}
+			}else {
+				System.out.println("Contraseña o usuario erroneo");
+			}
+		}
 		
 	}
+	/**
+	 * Función para saber si el usuario es del personal o un cliente.
+	 * @param usu = DNI del usuario
+	 * @return booleano true = personal false = cliente
+	 */
+	public boolean isPersonal(Usuario usu) {
+		if(usu.isRol()) return true;
+		else return false;
+	}
+	
 }

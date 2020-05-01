@@ -92,7 +92,10 @@ public class SQLEs {
 
 		conectar();
 		sentencia = c.createStatement();
-		String consultaSql = "SELECT * FROM ES WHERE idCliente LIKE '%"+DNI+"%';";
+		String consultaSql;
+		
+		if(DNI.length() == 9)consultaSql = "SELECT * FROM ES WHERE idCliente LIKE '"+DNI+"';";
+		else consultaSql = "SELECT * FROM ES WHERE idCliente LIKE '%"+DNI+"%';";
 
 		try {
 
@@ -165,6 +168,7 @@ public class SQLEs {
 	 * @throws SQLException 
 	 */
 	public String calcular(String INICIO,String FINAL,String DNI) throws ParseException, SQLException {
+		System.out.println("calculando...");
 		long total = 0;
 		ArrayList<ES> aEs = consultar(INICIO, FINAL, DNI); 
 		for(int i = 0; i<aEs.size()-1;i++) {

@@ -32,11 +32,11 @@ public class Testeo {
 		System.out.println(sqlusers.consultar().toString());
 		sqlusers.eliminar("111111111A");
 		System.out.println(sqlusers.consultar().toString());
-		*/
+		
 		
 		//Conectar a la BBDD y mostrar las entradas y salidas
 		SQLEs sqlEs = new SQLEs();
-		/*ES es = new ES(1,"39500266C","20/20/2020 19:00", true);
+		ES es = new ES(1,"39500266C","20/20/2020 19:00", true);
 		ES es1= new ES(1,"11111111A","21/20/2020 19:00", true);
 		ES es2 = new ES(1,"11111111A","21/20/2020 20:00", false);
 		ES es3 = new ES(1,"11111111A","24/20/2020 21:00", true);
@@ -48,10 +48,10 @@ public class Testeo {
 		sqlEs.crear(es4);
 		System.out.println(sqlEs.consultar("39500266C").toString());
 		System.out.println(sqlEs.consultar("21/20/2020 19:00","24/20/2020 21:00","11111111A").toString());
-		*/
 		
 		//probar funcion calcular
 		System.out.println(sqlEs.calcular("2020/10/01 10:00:00","2020/10/02 14:00:00","11111111A"));
+		*/
 
 		
 		

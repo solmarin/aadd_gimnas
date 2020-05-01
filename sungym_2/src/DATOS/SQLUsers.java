@@ -29,13 +29,15 @@ public class SQLUsers {
 
 		}
 		
-		public ArrayList<Usuario> consultar() throws SQLException {
+		public ArrayList<Usuario> consultar(String dni) throws SQLException {
 
 			conectar();
 			sentencia = c.createStatement();
+			String consultaSql;
 			
 			//consulta sql
-			String consultaSql = "SELECT * FROM USUARIO;";
+			if(dni.isEmpty()) consultaSql = "SELECT * FROM USUARIO;";
+			else  consultaSql = "SELECT * FROM USUARIO WHERE DNI LIKE '%"+dni+"%';";
 
 			try {
 				//ejecutar consulta sql
@@ -149,7 +151,7 @@ public class SQLUsers {
 			else deudorNum = 0;
 			
 			//consulta sql
-			String sqlEdit = "UPDATE USUARIO SET DNI ='"+DNI+"', nombre = '"+nombre+"', apellidos ='"+apellidos+"',"
+			String sqlEdit = "UPDATE USUARIO SET nombre = '"+nombre+"', apellidos ='"+apellidos+"',"
 					+ "fechaNacimiento='"+fechaNacimiento+"', direccion='"+direccion+"', contraseña='"+contrasena+"',"
 							+ "datos='"+datos+"', rol='"+rolNum+"', deudor='"+deudorNum+"' WHERE DNI ='"+DNI+"'";
 
