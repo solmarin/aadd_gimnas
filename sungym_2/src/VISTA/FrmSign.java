@@ -3,6 +3,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import RECURSOS.TextPrompt;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -21,29 +23,20 @@ import javax.swing.WindowConstants;
 
 import DATOS.SQLEs;
 import DATOS.SQLGyms;
+import DATOS.SQLUsers;
 import MODELO.ES;
+import MODELO.Usuario;
 
 import java.awt.ComponentOrientation;
 public class FrmSign {
-
-	public static JFrame frameSign;
-	private JTextField JTFDNI;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmSign window = new FrmSign();
-					window.frameSign.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	//Declaración variables
+		public static JFrame frameSign;
+		private JTextField JTFDNI;
+		private JLabel JLlogin;
+		private TextPrompt placeholder;
+		private ImageIcon iconBSign;
+        private ImageIcon iconEBSign;
+        private JButton bSign;
 
 	/**
 	 * Create the application.
@@ -56,76 +49,101 @@ public class FrmSign {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		this.diseño();
+		this.eventos();
+	}
+	
+	/**
+	 * Función para controlar y definir el diseño de la vista para fichar.
+	 */
+	public void diseño() {
 		//Ventana
-		
-		frameSign = new JFrame();
-		frameSign.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		frameSign.getContentPane().setBackground(SystemColor.controlDkShadow);
-		frameSign.setBounds(0, 0, 450, 300);
-		frameSign.setLocationRelativeTo(null);
-		frameSign.getContentPane().setLayout(null);
-		frameSign.setResizable(false);
-		frameSign.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		
-		//Imagen fichar 
-		//ImageIcon iFFondo = new ImageIcon("src/RECURSOS/pesas.png");
-       // ImageIcon iFEFondo = new ImageIcon(iFFondo.getImage().getScaledInstance(100, 100, java.awt.Image.SCALE_DEFAULT));
+			frameSign = new JFrame();
+			frameSign.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			frameSign.getContentPane().setBackground(SystemColor.controlDkShadow);
+			frameSign.setBounds(0, 0, 450, 300);
+			frameSign.setLocationRelativeTo(null);
+			frameSign.getContentPane().setLayout(null);
+			frameSign.setResizable(false);
+			frameSign.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		//Label informativo
-		JLabel JLlogin = new JLabel(" SIGN				       		            Sungym");
-		JLlogin.setBackground(new Color(255, 51, 255));
-		JLlogin.setOpaque(true);
-		JLlogin.setFont(new Font("Courier New", Font.CENTER_BASELINE, 23));
-		JLlogin.setForeground(Color.WHITE);
-		JLlogin.setBounds(0, 0, 450, 40);
-		frameSign.getContentPane().add(JLlogin, BorderLayout.NORTH);
-		
+			JLlogin = new JLabel(" SIGN				       		            Sungym");
+			JLlogin.setBackground(new Color(255, 51, 255));
+			JLlogin.setOpaque(true);
+			JLlogin.setFont(new Font("Courier New", Font.CENTER_BASELINE, 23));
+			JLlogin.setForeground(Color.WHITE);
+			JLlogin.setBounds(0, 0, 450, 40);
+			frameSign.getContentPane().add(JLlogin, BorderLayout.NORTH);
+			
 		//TextField usuario
-		JTFDNI = new JTextField();
-		JTFDNI.setBounds(144, 83, 150, 24);
-		TextPrompt placeholder = new TextPrompt("DNI", JTFDNI);
-	    placeholder.changeAlpha(0.75f);
-	    placeholder.changeStyle(Font.ITALIC);
-		frameSign.getContentPane().add(JTFDNI);
-		JTFDNI.setHorizontalAlignment(JTextField.LEFT); 
-		JTFDNI.setColumns(10);
-		
+			JTFDNI = new JTextField();
+			JTFDNI.setBounds(144, 83, 150, 24);
+			placeholder = new TextPrompt("DNI", JTFDNI);
+		    placeholder.changeAlpha(0.75f);
+		    placeholder.changeStyle(Font.ITALIC);
+			frameSign.getContentPane().add(JTFDNI);
+			JTFDNI.setHorizontalAlignment(JTextField.LEFT); 
+			JTFDNI.setColumns(10);
+			
 		//Icono de boton fichar
-		ImageIcon iconBSign = new ImageIcon("src/RECURSOS/sign.png");
-        ImageIcon iconEBSign = new ImageIcon(iconBSign.getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_DEFAULT));
-        
-        //Boton para fichar
-		JButton bSign = new JButton();
-		bSign.setBounds(210, 128, 34, 40);
-		frameSign.getContentPane().add(bSign);
-		bSign.setMnemonic(KeyEvent.VK_ENTER);
-		bSign.setIgnoreRepaint(true);
-		bSign.setBorderPainted(false);
-		bSign.setContentAreaFilled(false);
-		bSign.setIcon(iconEBSign);
-		bSign.setFocusable(false);
+			iconBSign = new ImageIcon("src/RECURSOS/sign.png");
+	        iconEBSign = new ImageIcon(iconBSign.getImage().getScaledInstance(30, 30, java.awt.Image.SCALE_DEFAULT));
+	        
+	    //Boton para fichar
+			bSign = new JButton();
+			bSign.setBounds(210, 128, 34, 40);
+			frameSign.getContentPane().add(bSign);
+			bSign.setMnemonic(KeyEvent.VK_ENTER);
+			bSign.setIgnoreRepaint(true);
+			bSign.setBorderPainted(false);
+			bSign.setContentAreaFilled(false);
+			bSign.setIcon(iconEBSign);
+			bSign.setFocusable(false);
 		
-		bSign.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//declaramos y inicializamos variables
-				SQLGyms sqlGyms = new SQLGyms();
-				SQLEs sqlEs = new SQLEs();
-								
-				//consulta sql para añadir el registro a la tablas
-				
-				try {
-					sqlEs.crear(new ES(generarGym(sqlEs,sqlGyms,JTFDNI.getText()),JTFDNI.getText(),generarFecha(),generarEoS(sqlEs,JTFDNI.getText())));
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+	}
+	
+	/**
+	 * Función que controla los eventos de la vista para fichar.
+	 */
+	public void eventos() {
+		//Evento: crear un nuevo registro en tabla ES
+			bSign.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					//declaramos y inicializamos variables
+					SQLGyms sqlGyms = new SQLGyms();
+					SQLEs sqlEs = new SQLEs();
+					
+					if(existe()) {
+					//consulta sql para añadir el registro a la tablas
+						try {
+							sqlEs.crear(new ES(generarGym(sqlEs,sqlGyms,JTFDNI.getText().toUpperCase()),JTFDNI.getText(),generarFecha(),generarEoS(sqlEs,JTFDNI.getText().toUpperCase())));
+							JOptionPane.showMessageDialog(null, "Registro realizado.");
+						} catch (SQLException e) {
+							JOptionPane.showConfirmDialog(null, "Error: no se ha podido guardar el registro.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+						}
+					}else {
+						JOptionPane.showConfirmDialog(null, "Error: no existe el usuario", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+					}
+					
 				}
-				
-				
+			});			
 		
-			}
-		});			
+	}
+	/**
+	 * Función para consultar si existe el usuario.
+	 */
+	public boolean existe() {
+		SQLUsers sqlUser = new SQLUsers();
+		ArrayList <Usuario> usu = null;
+		try {
+			usu = sqlUser.consultar(JTFDNI.getText().toUpperCase());
+		} catch (SQLException e1) {
+			JOptionPane.showConfirmDialog(null, "Error: administrar programador.Nota: buscar usuario", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+		}
 		
+		if(usu.size()<1) return false;
+		else return true;
 	}
 	/**
 	 * funcion para atrapar la fecha actual del sistema y devolverla.
@@ -140,7 +158,7 @@ public class FrmSign {
 		fecha = Integer.toString(cal.get(Calendar.YEAR))+"/"
 				+ Integer.toString(cal.get(Calendar.MONTH))+"/"
 				+ Integer.toString(cal.get(Calendar.DATE))+" "
-				+ Integer.toString(cal.get(Calendar.HOUR))+":"
+				+ Integer.toString(cal.get(Calendar.HOUR_OF_DAY))+":"
 				+ Integer.toString(cal.get(Calendar.MINUTE))+":"
 				+ Integer.toString(cal.get(Calendar.SECOND));
 		
@@ -160,8 +178,7 @@ public class FrmSign {
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			System.out.println("errrrror");
+			JOptionPane.showConfirmDialog(null, "Error: administrar programador. Nota: generar EoS", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 		}
 		
 		//Tratamiento segun si existe ya un registro o no con este DNI
@@ -189,7 +206,8 @@ public class FrmSign {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-			System.out.println("errrrror");
+			JOptionPane.showConfirmDialog(null, "Error:administrar programador. Nota: generar Gym, ","Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
 		}
 		
 		//Tratamiento segun si existe ya un registro o no con este DNI y el idGym que devuelve 
@@ -214,8 +232,7 @@ public class FrmSign {
 		try {
 			max = sqlGyms.consultar().size();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showConfirmDialog(null, "Error:administrar programador. Nota: num aleatorio. ", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 		}
 		idGym = (int)Math.floor(Math.random()*max+1);
 		

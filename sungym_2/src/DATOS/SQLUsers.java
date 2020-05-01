@@ -16,6 +16,9 @@ public class SQLUsers {
 		Connection c = null;
 		Statement sentencia = null;
 		ArrayList<Usuario> aUsers = new ArrayList <Usuario>(); 
+		/**
+		 * Función para conectar a la BBDD
+		 */
 		public void conectar() {
 			try {
 
@@ -24,7 +27,7 @@ public class SQLUsers {
 				System.out.println("EXITO AL CONECTAR A LA BBDD");
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL CONECTAR A LA BBDD: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -69,7 +72,7 @@ public class SQLUsers {
 				c.close();
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 				
 			}
 			return aUsers;
@@ -111,7 +114,7 @@ public class SQLUsers {
 				c.close();
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 				
 			}
 			return aUsers;
@@ -134,7 +137,7 @@ public class SQLUsers {
 				System.out.println("Datos insertados");
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL INSERTAR DATOS EN LA TABLA: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -165,7 +168,7 @@ public class SQLUsers {
 				System.out.println("Datos actualizados");
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL ACTUALIZAR DATOS EN LA TABLA: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 				
 			}
 
@@ -185,7 +188,7 @@ public class SQLUsers {
 				System.out.println("Datos eliminados");
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL BORRAR DATOS EN LA TABLA: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			
 			}
 

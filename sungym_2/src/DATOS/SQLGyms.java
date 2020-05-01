@@ -15,7 +15,9 @@ public class SQLGyms {
 	Connection c = null;
 	Statement sentencia = null;
 	ArrayList<Gimnasio> aGyms = new ArrayList <Gimnasio>(); 
-
+	/**
+	 * Función para conectar BBDD
+	 */
 	public void conectar() {
 
 		try {
@@ -25,12 +27,16 @@ public class SQLGyms {
 			System.out.println("EXITO AL CONECTAR A LA BBDD");
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL CONECTAR A LA BBDD: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 
 		}
 
 	}
-	
+	/**
+	 * Función para consultar los datos
+	 * @return
+	 * @throws SQLException
+	 */
 	public ArrayList<Gimnasio> consultar() throws SQLException {
 
 		conectar();
@@ -56,7 +62,7 @@ public class SQLGyms {
 		 
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			
 		}
 		return aGyms;

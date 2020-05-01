@@ -39,78 +39,78 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 
 public class FrmPersonal {
-
-	public JFrame framePersonal;
-	private JTextField txtFechaIn;
-	private JTextField txtFechaFi;
-	private JTextField textField;
-	private JTextField textFieldName;
-	private JTextField textFieldDni;
-	private JTextField textFieldBirth;
-	private JTextField textFieldAdress;
-	private JTextField textFieldOther;
+	//Declaración de variables
+		public JFrame framePersonal;
+		private JTextField txtFechaIn;
+		private JTextField txtFechaFi;
+		private JTextField textField;
+		private JTextField textFieldName;
+		private JTextField textFieldDni;
+		private JTextField textFieldBirth;
+		private JTextField textFieldAdress;
+		private JTextField textFieldOther;
+		
+		private Usuario usuario;
+		private Usuario createUser;
+		
+		private DefaultTableModel model;
+		
+		private SQLEs sqlEs;
+		
+		private String horas;
+		
+		private JButton bEditUser;
+		private JButton bCrearUser;
+		private JButton bDeleteUser;
+		private JButton bFilter;
+		private JButton bSave;
+		
+		private JLabel JLlogin;
+		private JLabel JLInfo;
+		private JLabel JLNameUser;
+		private JLabel JLNameUserc;
+		private JLabel JLUserDni;
+		private JLabel JLUserDniC;
+		private JLabel JDUserBirthdate;
+		private JLabel JLUserBirthdateC;
+		private JLabel JLUserAddress;
+		private JLabel JLUserAddressC;
+		private JLabel JLUserInfo;
+		private JLabel JLname;
+		private JLabel JLnamec;
+		private JLabel JLDni;
+		private JLabel JLDniC;
+		private JLabel JDBirthdate;
+		private JLabel JLBirthdateC;
+		private JLabel JLAddress;
+		private JLabel JLAddressC;
+		private JLabel JLAddInfo;
+		private JLabel JLAddInfoC;
+		private JLabel JLFiltrar;
+		private JLabel JLtotal;
+		private JLabel FilterDNI;
+		 private JTextField textFieldApell;
+		
+		private JCheckBox chckbxPagado;
+		
+		private Object[] titulos = {"Id GYM","Id cliente", "Fecha", "Entrada/Salida"};
+		private Object[] celdas = {};
+		
+		private JScrollPane scroll;
+		
+		private JTable table;
 	
-	private Usuario usuario;
-	private Usuario createUser;
-	
-	private DefaultTableModel model;
-	
-	private SQLEs sqlEs;
-	
-	private String horas;
-	
-	private JButton bEditUser;
-	private JButton bCrearUser;
-	private JButton bDeleteUser;
-	private JButton bFilter;
-	private JButton bSave;
-	
-	private JLabel JLlogin;
-	private JLabel JLInfo;
-	private JLabel JLNameUser;
-	private JLabel JLNameUserc;
-	private JLabel JLUserDni;
-	private JLabel JLUserDniC;
-	private JLabel JDUserBirthdate;
-	private JLabel JLUserBirthdateC;
-	private JLabel JLUserAddress;
-	private JLabel JLUserAddressC;
-	private JLabel JLUserInfo;
-	private JLabel JLname;
-	private JLabel JLnamec;
-	private JLabel JLDni;
-	private JLabel JLDniC;
-	private JLabel JDBirthdate;
-	private JLabel JLBirthdateC;
-	private JLabel JLAddress;
-	private JLabel JLAddressC;
-	private JLabel JLAddInfo;
-	private JLabel JLAddInfoC;
-	private JLabel JLFiltrar;
-	private JLabel JLtotal;
-	private JLabel FilterDNI;
-	 private JTextField textFieldApell;
-	
-	private JCheckBox chckbxPagado;
-	
-	private Object[] titulos = {"Id GYM","Id cliente", "Fecha", "Entrada/Salida"};
-	private Object[] celdas = {};
-	
-	private JScrollPane scroll;
-	
-	private JTable table;
-
-	private TextPrompt placeholderIn;
-	private TextPrompt placeholderFi;
-	
-	private ImageIcon iconBFilter ;
-    private ImageIcon iconBEFilter;
-    
-    private boolean crear;
-    private boolean editar;
-    private JTextField textFieldContra;
-   
-    
+		private TextPrompt placeholderIn;
+		private TextPrompt placeholderFi;
+		
+		private ImageIcon iconBFilter ;
+	    private ImageIcon iconBEFilter;
+	    
+	    private boolean crear;
+	    private boolean editar;
+	    private JTextField textFieldContra;
+	   
+	    
 
 	/**
 	 * Create the application.
@@ -130,334 +130,11 @@ public class FrmPersonal {
 	private void initialize() throws SQLException, ParseException {
 		diseño();
 		eventos();
-	
-	    actualizarTabla(textField.getText());
-	    
-	}
-	
-	/**
-	 * Función para actualizar los campos de la tabla con los datos del usuario.
-	 */
-	public void actualizarTabla(String dni) {
-		try {
-		 model.setRowCount(0);
-		 sqlEs = new SQLEs();
-		 for(ES c: sqlEs.consultar(dni)) {
-		    	if(c != null) {
-		    		int idGym = c.getIdGym();
-					String fechaHora = c.getFechaHora();
-					String idCliente = c.getIdCliente();
-					boolean eS = c.iseS();
-			    	
-					model.addRow(new Object[] {idGym,idCliente, fechaHora,eS});
-		    	}  	
-		    }
-		 } catch (NumberFormatException | SQLException e) {
-				e.printStackTrace();
-		 }	
-	}
-	
-	/**
-	 * Función para llamar a la funcion calcular horas pasando dos fechas por parametro o no.
-	 * @param ini
-	 * @param fin
-	 * @return
-	 * @throws SQLException
-	 * @throws ParseException
-	 */
-	public String calcular(String ini, String fin) throws SQLException, ParseException {
-		SQLEs sqlEs2 = new SQLEs();
-		String total = null;
-		String inicio = null;
-		String finall =null;
-		
-		//Tratamos los casos: no filtrar por fecha y filtrar por fecha
-		if(ini.isEmpty() && fin.isEmpty()) {
-			ArrayList<ES> eS = sqlEs2.consultar(textField.getText());
-			inicio = eS.get(0).getFechaHora();
-			finall = eS.get(eS.size()-1).getFechaHora();
-
-		}else {
-			inicio = ini;
-			finall = fin;
-			
-		}
-		//calculamos el total de horass
-		total = sqlEs2.calcular(inicio, finall, textField.getText());
-		
-		return total;
+ 
 	}
 	/**
-	 * Función para filtrar la tabla por dos fechas.
-	 * @param ini = fecha incial 
-	 * @param fin = fecha final
+	 * Función que determina el diseño de la vista.
 	 */
-	public void filtrarTabla(String ini, String fin) {
-		
-		try {
-		 model.setRowCount(0);
-		 sqlEs = new SQLEs();
-		 for(ES c: sqlEs.consultar(ini,fin,textField.getText())) {
-		    	if(c != null) {
-		    		int idGym = c.getIdGym();
-					String fechaHora = c.getFechaHora();
-					boolean eS = c.iseS();
-			    	
-					model.addRow(new Object[] {idGym,fechaHora,eS});
-		    	}  	
-		    }
-		 } catch (NumberFormatException | SQLException e) {
-				e.printStackTrace();
-		 }
-		
-	}
-	
-	public void createUser() {
-		
-			crear = false;
-		
-			SQLUsers sqlUsers = new SQLUsers();
-			String contraseña = textFieldName.getText()+ textFieldDni.getText().substring(0,4);
- 			try {
- 				 createUser = new Usuario(textFieldDni.getText(),textFieldName.getText(),textFieldApell.getText(),textFieldBirth.getText(),
- 						contraseña,textFieldAdress.getText(),textFieldOther.getText(),false,chckbxPagado.isSelected());
-			} catch (Exception e) {
-				e.getMessage();
-			}
-		    
-			try {
-				
-				sqlUsers.crear(createUser);
-				System.out.println("creado");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			//reset diseño
-		 	textFieldName.setVisible(false);
-		    textFieldName.setEnabled(false);
-		    textFieldApell.setVisible(false);
-		    textFieldApell.setEnabled(false);
-		    textFieldDni.setVisible(false);
-		    textFieldDni.setEnabled(false);
-		    textFieldBirth.setVisible(false);
-		    textFieldBirth.setEnabled(false);
-		    textFieldAdress.setVisible(false);
-		    textFieldAdress.setEnabled(false);
-		    textFieldOther.setVisible(false);
-		    textFieldOther.setEnabled(false);
-		    chckbxPagado.setEnabled(false);
-			framePersonal.getContentPane().add(chckbxPagado);
-			
-			textFieldName.setText("");
-		    textFieldApell.setText("");
-		    textFieldDni.setText("");
-		    textFieldBirth.setText("");
-		    textFieldAdress.setText("");
-		    textFieldOther.setText("");
-			
-	}
-		
-	public void delUser() {
-		SQLUsers sqlUsers =  new SQLUsers();
-		try {
-			sqlUsers.eliminar(textField.getText());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void editUser() {
-		
-		editar = false;
-	
-		SQLUsers sqlUsers = new SQLUsers();
-	    
-		try {
-			sqlUsers.editar(textField.getText(),textFieldName.getText(),textFieldApell.getText(),textFieldBirth.getText(),textFieldAdress.getText(),
-					textFieldContra.getText(),textFieldOther.getText(),false,chckbxPagado.isSelected());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		//reset diseño
-	 	textFieldName.setVisible(false);
-	    textFieldName.setEnabled(false);
-	    textFieldApell.setVisible(false);
-	    textFieldApell.setEnabled(false);
-	    textFieldDni.setVisible(false);
-	    textFieldDni.setEnabled(false);
-	    textFieldBirth.setVisible(false);
-	    textFieldBirth.setEnabled(false);
-	    textFieldAdress.setVisible(false);
-	    textFieldAdress.setEnabled(false);
-	    textFieldOther.setVisible(false);
-	    textFieldOther.setEnabled(false);
-	    chckbxPagado.setEnabled(false);
-	    textFieldContra.setVisible(false);
-	    textFieldContra.setEnabled(false);
-		framePersonal.getContentPane().add(chckbxPagado);
-		
-		textFieldName.setText("");
-	    textFieldApell.setText("");
-	    textFieldDni.setText("");
-	    textFieldBirth.setText("");
-	    textFieldAdress.setText("");
-	    textFieldOther.setText("");
-		
-	}
-	public void eventos() {
-		
-		//Evento: clicar boton para filtrar la tabla de datos
-		bFilter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if(textField.getText().length()==9 && !txtFechaIn.getText().equals("") && !txtFechaFi.getText().equals("")) {
-					filtrarTabla(txtFechaIn.getText(),txtFechaFi.getText());
-					try {
-						horas = calcular(txtFechaIn.getText(),txtFechaFi.getText());
-						JLtotal.setText(horas);
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-									
-				}else {
-					System.out.println("DNI incorrecto/fecha no introducida");
-				}
-			}
-		});
-		
-		//Evento: escribir en el dni
-		textField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				actualizarTabla(textField.getText());
-				//Actualizar datos cliente
-				if(textField.getText().length()==9) {
-					
-					SQLUsers sqlUsuario = new SQLUsers();
-				
-					try {
-						Usuario usu = sqlUsuario.consultar(textField.getText()).get(0);
-						JLnamec.setText(usu.getNombre()+" "+usu.getApellidos());
-						JLDniC.setText(usu.getDNI());
-						JLBirthdateC.setText(usu.getFechaNacimiento());
-						JLAddressC.setText(usu.getDireccion());
-						JLAddInfoC.setText(usu.getDatos());
-						chckbxPagado.setSelected(usu.isDeudor());
-						framePersonal.getContentPane().add(chckbxPagado);
-						
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}else {
-					JLnamec.setText("");
-					JLDniC.setText("");
-					JLBirthdateC.setText("");
-					JLAddressC.setText("");
-					JLAddInfoC.setText("");
-					chckbxPagado.setSelected(false);
-					framePersonal.getContentPane().add(chckbxPagado);
-					
-				}
-			}
-		});
-		
-		//Evento: crear nuevo usuario
-	    bCrearUser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				bEditUser.setEnabled(false);
-				bDeleteUser.setEnabled(false);
-				bCrearUser.setEnabled(false);
-				
-			    textFieldName.setVisible(true);
-			    textFieldName.setEnabled(true);
-			    textFieldApell.setVisible(true);
-			    textFieldApell.setEnabled(true);
-			    textFieldDni.setVisible(true);
-			    textFieldDni.setEnabled(true);
-			    textFieldBirth.setVisible(true);
-			    textFieldBirth.setEnabled(true);
-			    textFieldAdress.setVisible(true);
-			    textFieldAdress.setEnabled(true);
-			    textFieldOther.setVisible(true);
-			    textFieldOther.setEnabled(true);
-			    chckbxPagado.setEnabled(true);
-				framePersonal.getContentPane().add(chckbxPagado);	
-				
-				crear = true;
-				
-			}
-	    });
-	    
-	    //Evento: eliminar un usuario
-	    bDeleteUser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				
-				if(textField.getText().length()==9) {
-					 int dialogResult = JOptionPane.showConfirmDialog (null, "Seguro que quieres eliminar el cliente?","BORRAR CLIENTE",JOptionPane.YES_NO_OPTION);
-					 if(dialogResult == JOptionPane.YES_OPTION){
-						   delUser();
-						}
-				
-				}else System.out.println("dni incorrecto");
-			}
-	    });
-	    
-	    //Evento: editar un usuario
-	    bEditUser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(textField.getText().length()==9) {
-					bEditUser.setEnabled(false);
-					bDeleteUser.setEnabled(false);
-					bCrearUser.setEnabled(false);
-					
-				    textFieldName.setVisible(true);
-				    textFieldName.setEnabled(true);
-				    textFieldApell.setVisible(true);
-				    textFieldApell.setEnabled(true);
-				    textFieldBirth.setVisible(true);
-				    textFieldBirth.setEnabled(true);
-				    textFieldAdress.setVisible(true);
-				    textFieldAdress.setEnabled(true);
-				    textFieldOther.setVisible(true);
-				    textFieldOther.setEnabled(true);
-				    chckbxPagado.setEnabled(true);
-				    textFieldContra.setEnabled(true);
-				    textFieldContra.setVisible(true);
-					framePersonal.getContentPane().add(chckbxPagado);	
-					
-					editar = true;
-				}else System.out.println("dni incorrecto");
-			}
-	    });
-	    
-	    //Evento: opciones del save
-	    bSave.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				  if(crear)createUser();
-				  else if (editar) editUser();
-				  
-				  bEditUser.setEnabled(true);
-				  bDeleteUser.setEnabled(true);
-				  bCrearUser.setEnabled(true);
-			}
-	    });
-	    
-	}
-	
 	public void diseño() {
 		//ventana
 			framePersonal = new JFrame();
@@ -746,6 +423,318 @@ public class FrmPersonal {
 		    
 		    crear = false;
 		    editar = false;
+		    
+		    actualizarTabla(textField.getText());
 		   
 	}
+	/**
+	 * Función que controla los eventos de la vista.
+	 */
+	public void eventos() {
+			
+			//Evento: clicar boton para filtrar la tabla de datos
+			bFilter.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if(textField.getText().length()==9 && txtFechaIn.getText().matches("^[0-9]{4}/(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])$")
+							&& txtFechaFi.getText().matches("^[0-9]{4}/(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])$")) {
+						filtrarTabla(txtFechaIn.getText(),txtFechaFi.getText());
+						try {
+							horas = calcular(txtFechaIn.getText(),txtFechaFi.getText());
+							JLtotal.setText(horas);
+						} catch (SQLException | ParseException e) {
+							// TODO Auto-generated catch block
+							JOptionPane.showConfirmDialog(null, "Error: administrar programador. Nota: filtrar fechas", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+						} 				
+					}else {
+						JOptionPane.showConfirmDialog(null, "Error: DNI o fechas incorrectas", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+	
+					}
+				}
+			});
+			
+			//Evento: escribir en el dni
+			textField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					actualizarTabla(textField.getText());
+					//Actualizar datos cliente
+					if(textField.getText().length()==9) {
+						
+						SQLUsers sqlUsuario = new SQLUsers();
+					
+						try {
+							Usuario usu = sqlUsuario.consultar(textField.getText()).get(0);
+							if(usu!=null) {
+								JLnamec.setText(usu.getNombre()+" "+usu.getApellidos());
+								JLDniC.setText(usu.getDNI());
+								JLBirthdateC.setText(usu.getFechaNacimiento());
+								JLAddressC.setText(usu.getDireccion());
+								JLAddInfoC.setText(usu.getDatos());
+								chckbxPagado.setSelected(usu.isDeudor());
+								framePersonal.getContentPane().add(chckbxPagado);
+							}
+							
+						} catch (SQLException e1) {
+							System.out.println("Error: no existe el usuario");
+						}
+					}else {
+						JLnamec.setText("");
+						JLDniC.setText("");
+						JLBirthdateC.setText("");
+						JLAddressC.setText("");
+						JLAddInfoC.setText("");
+						chckbxPagado.setSelected(false);
+						framePersonal.getContentPane().add(chckbxPagado);
+						
+					}
+				}
+			});
+			
+			//Evento: crear nuevo usuario
+		    bCrearUser.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					activeDiseño();
+					crear = true;
+				}
+		    });
+		    
+		    //Evento: eliminar un usuario
+		    bDeleteUser.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					
+					if(textField.getText().length()==9) {
+						 int dialogResult = JOptionPane.showConfirmDialog (null, "Seguro que quieres eliminar el cliente?","BORRAR CLIENTE",JOptionPane.YES_NO_OPTION);
+						 if(dialogResult == JOptionPane.YES_OPTION){
+							   delUser();
+							}
+					
+					}else JOptionPane.showConfirmDialog(null, "Error: el usuario no existe.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+				}
+		    });
+		    
+		    //Evento: editar un usuario
+		    bEditUser.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if(textField.getText().length()==9) {
+	
+					    textFieldContra.setEnabled(true);
+					    textFieldContra.setVisible(true);
+					    activeDiseño();
+						textFieldDni.setVisible(false);
+						textFieldDni.setEditable(false);
+						editar = true;
+					}else JOptionPane.showConfirmDialog(null, "Error: el usuario no existe.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				}
+		    });
+		    
+		    //Evento: opciones del save
+		    bSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					  if(crear)createUser();
+					  else if (editar) editUser();
+					  
+					  bEditUser.setEnabled(true);
+					  bDeleteUser.setEnabled(true);
+					  bCrearUser.setEnabled(true);
+				}
+		    });
+		    
+	}
+	/**
+	 * Función para actualizar los campos de la tabla con los datos del usuario.
+	 */
+	public void actualizarTabla(String dni) {
+		try {
+		 model.setRowCount(0);
+		 sqlEs = new SQLEs();
+		 for(ES c: sqlEs.consultar(dni)) {
+		    	if(c != null) {
+		    		int idGym = c.getIdGym();
+					String fechaHora = c.getFechaHora();
+					String idCliente = c.getIdCliente();
+					if(c.iseS()) model.addRow(new Object[] {idGym,idCliente, fechaHora,"Entrada"});
+					else model.addRow(new Object[] {idGym,idCliente, fechaHora,"Salida"});
+		    	}  	
+		    }
+		 } catch (NumberFormatException | SQLException e) {
+				System.out.println("resultado: tabla vacia");
+		 }	
+	}
+	
+	/**
+	 * Función para llamar a la funcion calcular horas pasando dos fechas por parametro o no.
+	 * @param ini
+	 * @param fin
+	 * @return
+	 * @throws SQLException
+	 * @throws ParseException
+	 */
+	public String calcular(String ini, String fin) throws SQLException, ParseException {
+		SQLEs sqlEs2 = new SQLEs();
+		String total = null;
+		String inicio = null;
+		String finall =null;
+		
+		//Tratamos los casos: no filtrar por fecha y filtrar por fecha
+		if(ini.isEmpty() && fin.isEmpty()) {
+			ArrayList<ES> eS = sqlEs2.consultar(textField.getText());
+			inicio = eS.get(0).getFechaHora();
+			finall = eS.get(eS.size()-1).getFechaHora();
+
+		}else {
+			inicio = ini;
+			finall = fin;
+			
+		}
+		//calculamos el total de horass
+		total = sqlEs2.calcular(inicio, finall, textField.getText());
+		
+		return total;
+	}
+	/**
+	 * Función para filtrar la tabla por dos fechas.
+	 * @param ini = fecha incial 
+	 * @param fin = fecha final
+	 */
+	public void filtrarTabla(String ini, String fin) {
+		
+		try {
+		 model.setRowCount(0);
+		 sqlEs = new SQLEs();
+		 for(ES c: sqlEs.consultar(ini,fin,textField.getText())) {
+		    	if(c != null) {
+		    		int idGym = c.getIdGym();
+					String fechaHora = c.getFechaHora();
+					if(c.iseS()) model.addRow(new Object[] {idGym,textField.getText(), fechaHora,"Entrada"});
+					else model.addRow(new Object[] {idGym,textField.getText(), fechaHora,"Salida"});
+		    	}  	
+		    }
+		 } catch (NumberFormatException | SQLException e) {
+			 JOptionPane.showConfirmDialog(null, "Error: adminitrar programador.Nota: filtrado por fecha..", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+		 }
+		
+	}
+	/**
+	 * Función para crear un usuario.
+	 */
+	public void createUser() {
+		
+			crear = false;
+		
+			SQLUsers sqlUsers = new SQLUsers();
+			String contraseña = textFieldName.getText()+ textFieldDni.getText().substring(0,4);
+ 			try {
+ 				 createUser = new Usuario(textFieldDni.getText(),textFieldName.getText(),textFieldApell.getText(),textFieldBirth.getText(),textFieldAdress.getText(),
+ 						contraseña,textFieldOther.getText(),false,chckbxPagado.isSelected());
+			} catch (Exception e) {
+				JOptionPane.showConfirmDialog(null, "Error: Usuario no creado. Contacte con tecnico.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			}
+		    
+			try {
+				sqlUsers.crear(createUser);
+				JOptionPane.showMessageDialog(null, "Crear usuario: operación realizada correctamente.");
+			} catch (SQLException e) {
+				JOptionPane.showConfirmDialog(null, "Error: Usuario no creado. Contacte con tecnico.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			}
+			
+			resetDiseño();
+			
+	}
+	/**
+	 * Función para borrar un usuario.
+	 */
+	public void delUser() {
+		SQLUsers sqlUsers =  new SQLUsers();
+		try {
+			sqlUsers.eliminar(textField.getText());
+			JOptionPane.showMessageDialog(null, "Eliminar usuario: operación realizada correctamente.");
+		} catch (SQLException e) {
+			JOptionPane.showConfirmDialog(null, "Error: Usuario no borrado. Contacte con tecnico.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+		}
+	}
+	/**
+	 * Función para editar un usuario.
+	 */
+	public void editUser() {
+		
+		editar = false;
+	
+		SQLUsers sqlUsers = new SQLUsers();
+	    
+		try {
+			sqlUsers.editar(textField.getText(),textFieldName.getText(),textFieldApell.getText(),textFieldBirth.getText(),textFieldAdress.getText(),
+					textFieldContra.getText(),textFieldOther.getText(),false,chckbxPagado.isSelected());
+			JOptionPane.showMessageDialog(null, "Editar usuario: operación realizada correctamente.");
+		} catch (SQLException e) {
+			JOptionPane.showConfirmDialog(null, "Error: Usuario no editado. Contacte con tecnico.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+		}
+		
+		resetDiseño();
+	 
+	}
+	
+	/**
+	 * Función para activar algunos componentes del diseño.
+	 */
+	public void activeDiseño() {
+		
+		bEditUser.setEnabled(false);
+		bDeleteUser.setEnabled(false);
+		bCrearUser.setEnabled(false);
+		
+	    textFieldName.setVisible(true);
+	    textFieldName.setEnabled(true);
+	    textFieldApell.setVisible(true);
+	    textFieldApell.setEnabled(true);
+	    textFieldDni.setVisible(true);
+	    textFieldDni.setEnabled(true);
+	    textFieldBirth.setVisible(true);
+	    textFieldBirth.setEnabled(true);
+	    textFieldAdress.setVisible(true);
+	    textFieldAdress.setEnabled(true);
+	    textFieldOther.setVisible(true);
+	    textFieldOther.setEnabled(true);
+	    chckbxPagado.setEnabled(true);
+		framePersonal.getContentPane().add(chckbxPagado);	
+		
+	}
+	/**
+	 * Función para volver a silenciar/esconder algunos parametros de diseño. 
+	 */
+	public void resetDiseño() {
+		textFieldName.setVisible(false);
+	    textFieldName.setEnabled(false);
+	    textFieldApell.setVisible(false);
+	    textFieldApell.setEnabled(false);
+	    textFieldDni.setVisible(false);
+	    textFieldDni.setEnabled(false);
+	    textFieldBirth.setVisible(false);
+	    textFieldBirth.setEnabled(false);
+	    textFieldAdress.setVisible(false);
+	    textFieldAdress.setEnabled(false);
+	    textFieldOther.setVisible(false);
+	    textFieldOther.setEnabled(false);
+	    chckbxPagado.setEnabled(false);
+	    textFieldContra.setVisible(false);
+	    textFieldContra.setEnabled(false);
+		framePersonal.getContentPane().add(chckbxPagado);
+		
+		textFieldName.setText("");
+	    textFieldApell.setText("");
+	    textFieldDni.setText("");
+	    textFieldBirth.setText("");
+	    textFieldAdress.setText("");
+	    textFieldOther.setText("");
+	    textFieldContra.setText("");
+		
+	}
+	
+
 }

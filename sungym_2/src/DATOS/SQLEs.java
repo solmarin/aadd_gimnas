@@ -18,7 +18,9 @@ public class SQLEs {
 	Connection c = null;
 	Statement sentencia = null;
 	ArrayList<ES> aES = new ArrayList <ES>(); 
-
+	/**
+	 * Función conexión con la BBDD
+	 */
 	public void conectar() {
 
 		try {
@@ -28,12 +30,16 @@ public class SQLEs {
 			System.out.println("EXITO AL CONECTAR A LA BBDD");
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL CONECTAR A LA BBDD: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 
 		}
 
 	}
-	
+	/**
+	 * Función para crear un registro ES
+	 * @param es
+	 * @throws SQLException
+	 */
 	public void crear(ES es) throws SQLException {
 		
 		String sqlInsert = "INSERT INTO ES(idGym,idCliente,fechaHora, eS) VALUES('"+es.getIdGym()+"','"+es.getIdCliente()+"','"+es.getFechaHora()+"',"
@@ -49,11 +55,15 @@ public class SQLEs {
 			System.out.println("Datos insertados");
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL INSERTAR DATOS EN LA TABLA: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 		}
 
 	}
-	
+	/**
+	 * Función para consultar los registros sin filtrar.
+	 * @return
+	 * @throws SQLException
+	 */
 	public ArrayList<ES> consultar() throws SQLException {
 
 		conectar();
@@ -81,13 +91,18 @@ public class SQLEs {
 		 
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			
 		}
 		return aES;
 
 	}
-	
+	/**
+	 * Función para filtrar los registros por dni.
+	 * @param DNI
+	 * @return
+	 * @throws SQLException
+	 */
 	public ArrayList<ES> consultar(String DNI) throws SQLException {
 
 		conectar();
@@ -118,13 +133,20 @@ public class SQLEs {
 		 
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			
 		}
 		return aES;
 
 	}
-	
+	/**
+	 * Función para filtrar los registros por fecha y dni
+	 * @param INICIO
+	 * @param FINAL
+	 * @param DNI
+	 * @return
+	 * @throws SQLException
+	 */
 	public ArrayList<ES> consultar(String INICIO, String FINAL, String DNI) throws SQLException {
 
 		conectar();
@@ -152,7 +174,7 @@ public class SQLEs {
 		 
 
 		} catch (Exception e) {
-			JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			
 		}
 		return aES;
@@ -183,9 +205,8 @@ public class SQLEs {
 		long diffSg = total / 1000 % 60;  
 		long diffMin = total / (60 * 1000) % 60; 
 		long diffH = total / (60 * 60 * 1000);
-		long diffD = total / (60 * 60 * 1000 * 24);
 		
-		return "Dias: "+diffD +" horas: "+diffH+" mins: "+diffMin+" ss:"+diffSg;
+		return " Horas: "+diffH+" mins: "+diffMin+" ss:"+diffSg;
 		
 	}
 	
